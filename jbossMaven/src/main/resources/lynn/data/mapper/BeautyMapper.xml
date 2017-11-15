@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="lynn.data.mapper.BeautyMapper" >
+  <resultMap id="BaseResultMap" type="lynn.data.domain.Beauty" >
+    <result column="UUID" property="UUID" jdbcType="VARCHAR" />
+    <result column="NAME" property="NAME" jdbcType="VARCHAR" />
+    <result column="SEX" property="SEX" jdbcType="INTEGER" />
+    <result column="IDCARED" property="IDCARED" jdbcType="VARCHAR" />
+    <result column="BORN" property="BORN" jdbcType="DATE" />
+    <result column="ADDRESS" property="ADDRESS" jdbcType="VARCHAR" />
+    <result column="ISBEAUTY" property="ISBEAUTY" jdbcType="INTEGER" />
+    <result column="ISCHU" property="ISCHU" jdbcType="INTEGER" />
+    <result column="MAJOR" property="MAJOR" jdbcType="VARCHAR" />
+    <result column="TEL" property="TEL" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="lynn.data.domain.Beauty" extends="BaseResultMap" >
+    <result column="PHOTO" property="PHOTO" jdbcType="LONGVARBINARY" />
+  </resultMap>
+  <sql id="Blob_Column_List" >
+    PHOTO
+  </sql>
+  <insert id="insert" parameterType="lynn.data.domain.Beauty" >
+    insert into beauty (UUID, NAME, SEX, 
+      IDCARED, BORN, ADDRESS, 
+      ISBEAUTY, ISCHU, MAJOR, 
+      TEL, PHOTO)
+    values (#{UUID,jdbcType=VARCHAR}, #{NAME,jdbcType=VARCHAR}, #{SEX,jdbcType=INTEGER}, 
+      #{IDCARED,jdbcType=VARCHAR}, #{BORN,jdbcType=DATE}, #{ADDRESS,jdbcType=VARCHAR}, 
+      #{ISBEAUTY,jdbcType=INTEGER}, #{ISCHU,jdbcType=INTEGER}, #{MAJOR,jdbcType=VARCHAR}, 
+      #{TEL,jdbcType=VARCHAR}, #{PHOTO,jdbcType=LONGVARBINARY})
+  </insert>
+  <insert id="insertSelective" parameterType="lynn.data.domain.Beauty" >
+    insert into beauty
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="UUID != null" >
+        UUID,
+      </if>
+      <if test="NAME != null" >
+        NAME,
+      </if>
+      <if test="SEX != null" >
+        SEX,
+      </if>
+      <if test="IDCARED != null" >
+        IDCARED,
+      </if>
+      <if test="BORN != null" >
+        BORN,
+      </if>
+      <if test="ADDRESS != null" >
+        ADDRESS,
+      </if>
+      <if test="ISBEAUTY != null" >
+        ISBEAUTY,
+      </if>
+      <if test="ISCHU != null" >
+        ISCHU,
+      </if>
+      <if test="MAJOR != null" >
+        MAJOR,
+      </if>
+      <if test="TEL != null" >
+        TEL,
+      </if>
+      <if test="PHOTO != null" >
+        PHOTO,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="UUID != null" >
+        #{UUID,jdbcType=VARCHAR},
+      </if>
+      <if test="NAME != null" >
+        #{NAME,jdbcType=VARCHAR},
+      </if>
+      <if test="SEX != null" >
+        #{SEX,jdbcType=INTEGER},
+      </if>
+      <if test="IDCARED != null" >
+        #{IDCARED,jdbcType=VARCHAR},
+      </if>
+      <if test="BORN != null" >
+        #{BORN,jdbcType=DATE},
+      </if>
+      <if test="ADDRESS != null" >
+        #{ADDRESS,jdbcType=VARCHAR},
+      </if>
+      <if test="ISBEAUTY != null" >
+        #{ISBEAUTY,jdbcType=INTEGER},
+      </if>
+      <if test="ISCHU != null" >
+        #{ISCHU,jdbcType=INTEGER},
+      </if>
+      <if test="MAJOR != null" >
+        #{MAJOR,jdbcType=VARCHAR},
+      </if>
+      <if test="TEL != null" >
+        #{TEL,jdbcType=VARCHAR},
+      </if>
+      <if test="PHOTO != null" >
+        #{PHOTO,jdbcType=LONGVARBINARY},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="getAll" resultMap="BaseResultMap">
+    SELECT  *  from beauty
+  </select>
+</mapper>

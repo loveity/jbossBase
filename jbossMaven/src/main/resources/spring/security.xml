@@ -1,0 +1,77 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+          http://www.springframework.org/schema/security
+          http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <!-- beans 开头用　security:　　security开头可以不用　bean必须是 beans:bean-->
+    <!-- 配置不过滤的资源（静态资源及登录相关） -->
+    <!--<security:http pattern="/**/*.css" security="none"></security:http>-->
+    <!--<security:http pattern="/**/*.jpg" security="none"></security:http>-->
+    <security:http pattern="/login.jsp" security="none" />
+    <security:http auto-config="true" access-denied-page="/noResources.html">
+        <security:intercept-url pattern="/endex.html" access="ROLE_ADMIN"/>
+        <security:intercept-url pattern="/**" access="ROLE_USER"/>
+        <security:custom-filter ref="myFilter" before="FILTER_SECURITY_INTERCEPTOR" />
+        <security:form-login login-page="/login.jsp" ></security:form-login>
+    <!--表示访问任何资源都需要ROLE_ADMIN权限。 注：/**的配置要放到最后-->
+
+        <!--使用form-login配置来指定我们自己的配置文件，其中-->
+        <!--login-page:登录页面-->
+        <!--authentication-failure-url：登录失败后跳转的页面-->
+        <!--default-target-url：登录成功后跳转的页面-->
+        <!--表单提交地址为：j_spring_security_check-->
+        <!--用户名的name为：j_username-->
+        <!--密码的name为：j_password-->
+        <!--提交方式为POS-->
+
+        <!--<http access-denied-page="/accessDenied.jsp">-->
+            <!--<form-login login-page="/login.jsp" />-->
+            <!--&lt;!&ndash;访问/admin.jsp资源的用户必须具有ROLE_ADMIN的权限 &ndash;&gt;-->
+            <!--&lt;!&ndash; <intercept-url pattern="/admin.jsp" access="ROLE_ADMIN" /> &ndash;&gt;-->
+            <!--&lt;!&ndash;访问/**资源的用户必须具有ROLE_USER的权限 &ndash;&gt;-->
+            <!--&lt;!&ndash; <intercept-url pattern="/**" access="ROLE_USER" /> &ndash;&gt;-->
+            <!--<session-management>-->
+                <!--<concurrency-control max-sessions="1"-->
+                                     <!--error-if-maximum-exceeded="false" />-->
+            <!--</session-management>-->
+            <!--&lt;!&ndash;增加一个filter，这点与 Acegi是不一样的，不能修改默认的filter了， 这个filter位于FILTER_SECURITY_INTERCEPTOR之前 &ndash;&gt;-->
+            <!--<custom-filter ref="myFilter" before="FILTER_SECURITY_INTERCEPTOR" />-->
+        <!--</http>-->
+
+        <!--<security:form-login login-page="/login.jsp" authentication-failure-url="/login.jsp"-->
+                        <!--default-target-url="/index.jsp"/>-->
+
+    </security:http>
+
+    <!--authentication-manager用来配置用户管理-->
+    <security:authentication-manager alias="authenticationManager">
+        <security:authentication-provider user-service-ref="myUserDetailService">
+            <!--<security:user-service  >-->
+                <!--如果用户的密码采用加密的话 <password-encoder hash="md5"  user-service-ref="myUserDetailService"/> -->
+                <!--<security:user name="user" password="user" authorities="ROLE_USER"/>-->
+                <!--<security:user name="admin" password="admin" authorities="ROLE_USER, ROLE_ADMIN"/>-->
+            <!--</security:user-service>-->
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+    <bean id="myFilter"
+            class="lynn.web.interceptor.OwerFilterSecurityInterceptor">
+        <property name="authenticationManager"  ref="authenticationManager" />
+        <property name="accessDecisionManager"  ref="myAccessDecisionManagerBean" />
+        <property name="securityMetadataSource" ref="securityMetadataSource" />
+    </bean>
+
+    <!--在这个类中，你就可以从数据库中读入用户的密码，角色信息，是否锁定，账号是否过期等 -->
+    <bean id="myUserDetailService" class="lynn.web.interceptor.OwnerUserDetailService" />
+    <!--访问决策器，决定某个用户具有的角色，是否有足够的权限去访问某个资源 -->
+    <bean id="myAccessDecisionManagerBean"
+            class="lynn.web.interceptor.OwnerAccessDecisionManager">
+    </bean>
+    <!--资源源数据定义，将所有的资源和权限对应关系建立起来，即定义某一资源可以被哪些角色访问 -->
+    <bean id="securityMetadataSource"
+            class="lynn.web.interceptor.OwnerInvocationSecurityMetadataSource" />
+
+</beans>
